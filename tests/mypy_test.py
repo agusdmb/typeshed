@@ -78,7 +78,7 @@ def parse_versions(fname):
             if line == "":
                 continue
             m = _VERSION_LINE_RE.match(line)
-            assert m, "invalid VERSIONS line: " + line
+            assert m, f"invalid VERSIONS line: {line}"
             mod = m.group(1)
             min_version = parse_version(m.group(2))
             max_version = parse_version(m.group(3)) if m.group(3) else (99, 99)
@@ -91,7 +91,7 @@ _VERSION_RE = re.compile(r"^([23])\.(\d+)$")
 
 def parse_version(v_str):
     m = _VERSION_RE.match(v_str)
-    assert m, "invalid version: " + v_str
+    assert m, f"invalid version: {v_str}"
     return int(m.group(1)), int(m.group(2))
 
 
@@ -156,14 +156,17 @@ def add_configuration(configurations: list[MypyDistConf], distribution: str) -> 
 
     assert isinstance(mypy_tests_conf, dict), "mypy-tests should be a section"
     for section_name, mypy_section in mypy_tests_conf.items():
-        assert isinstance(mypy_section, dict), "{} should be a section".format(section_name)
+        assert isinstance(mypy_section, dict), f"{section_name} should be a section"
         module_name = mypy_section.get("module_name")
 
-        assert module_name is not None, "{} should have a module_name key".format(section_name)
-        assert isinstance(module_name, str), "{} should be a key-value pair".format(section_name)
+        assert module_name is not None, f"{section_name} should have a module_name key"
+        assert isinstance(
+            module_name, str
+        ), f"{section_name} should be a key-value pair"
+
 
         values = mypy_section.get("values")
-        assert values is not None, "{} should have a values section".format(section_name)
+        assert values is not None, f"{section_name} should have a values section"
         assert isinstance(values, dict), "values should be a section"
 
         configurations.append(MypyDistConf(module_name, values.copy()))

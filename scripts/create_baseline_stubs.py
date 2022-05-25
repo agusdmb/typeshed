@@ -25,7 +25,7 @@ def search_pip_freeze_output(project: str, output: str) -> Optional[Tuple[str, s
     m = re.search(regex, output, flags=re.IGNORECASE | re.MULTILINE)
     if not m:
         return None
-    return m.group(1), m.group(2)
+    return m[1], m[2]
 
 
 def get_installed_package_info(project: str) -> Optional[Tuple[str, str]]:
@@ -54,7 +54,7 @@ def copy_stubs(src_base_dir: str, package: str, stub_dir: str) -> None:
     if os.path.isdir(src_dir):
         shutil.copytree(src_dir, os.path.join(stub_dir, package))
     else:
-        src_file = os.path.join("out", package + ".pyi")
+        src_file = os.path.join("out", f"{package}.pyi")
         if not os.path.isfile(src_file):
             sys.exit("Error: Cannot find generated stubs")
         shutil.copy(src_file, stub_dir)
@@ -76,7 +76,7 @@ def create_metadata(stub_dir: str, version: str) -> None:
     if m is None:
         sys.exit(f"Error: Cannot parse version number: {version}")
     fnam = os.path.join(stub_dir, "METADATA.toml")
-    version = m.group(0)
+    version = m[0]
     assert not os.path.exists(fnam)
     print(f"Writing {fnam}")
     with open(fnam, "w") as f:

@@ -16,7 +16,7 @@ def main() -> None:
     for uu in unused:
         with_filenames.extend(unused_files(uu))
     for file, uu in with_filenames:
-        print(file + ":" + uu)
+        print(f"{file}:{uu}")
 
 
 def run_stubtest() -> List[str]:
@@ -26,15 +26,21 @@ def run_stubtest() -> List[str]:
 
 
 def unused_files(unused: str) -> List[Tuple[str, str]]:
-    version = "py{}{}".format(sys.version_info[0], sys.version_info[1])
-    files = ["py3_common.txt", version + ".txt", sys.platform + ".txt", sys.platform + "-" + version + ".txt"]
+    version = f"py{sys.version_info[0]}{sys.version_info[1]}"
+    files = [
+        "py3_common.txt",
+        f"{version}.txt",
+        f"{sys.platform}.txt",
+        f"{sys.platform}-{version}.txt",
+    ]
+
     found = []
     for file in files:
         path = _ALLOWLIST_PATH / file
         if find_unused_in_file(unused, path):
             found.append((path.as_posix(), unused))
     if not found:
-        raise ValueError("unused item {} not found in any allowlist file".format(unused))
+        raise ValueError(f"unused item {unused} not found in any allowlist file")
     return found
 
 
